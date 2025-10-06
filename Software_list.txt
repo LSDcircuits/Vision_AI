@@ -13,6 +13,13 @@ labelImg
 Examples
 
 
+# vs code
+
+wget https://update.code.visualstudio.com/latest/linux-deb-arm64/stable -O code.deb
+sudo dpkg -i code.deb
+sudo apt-get install -f
+code --no-sandbox  # only way 
+
 download:
 
 # handy tool
