@@ -11,28 +11,7 @@ YoLo v11, MNIST
 OLLAMA – local models such as DeepseekR1:7b
 labelImg
 Examples
-
-# important the VM disk size needs to be altered after its made, this is done by.
-# install using brew
-brew install qemu
-
-
-# 1. find the file
-find ~ -type f -name "*.qcow2" 2>/dev/null
-
-# 2.
-qemu-img resize "/Users/yourname/Documents/UTM/Ubuntu 24.04/Images/Disk-0.qcow2" +20G
-
-
--------------------------------------------------------------------------------------
-#in ubuntu run this to increase ram during downloads (not sure wat it does from chatgpt)
-
-sudo fallocate -l 4G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-
+#-------------------------------------------------------------------------------------
 # vs code
 
 wget https://update.code.visualstudio.com/latest/linux-deb-arm64/stable -O code.deb
