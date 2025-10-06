@@ -13,3 +13,32 @@ labelImg
 Examples
 
 
+download:
+
+# handy tool
+sudo apt install curl 
+
+# get python
+sudo apt update
+sudo apt install -y python3 python3-pip python3-venv
+
+# make virtual env & install Libs
+python3 -m venv VAI
+source VAI/bin/activate
+pip install --upgrade pip
+pip install opencv-python-headless ffmpeg-python numpy pandas matplotlib scipy scikit-learn tqdm requests pyyaml
+pip install tensorflow keras torch torchvision torchaudio
+pip install labelImg
+
+
+# datasheets & yolo (from chatgpt)
+mkdir -p ~/ml_examples && cd ~/ml_examples
+git clone https://github.com/ultralytics/ultralytics.git || true
+git clone https://github.com/tzutalin/labelImg.git || true
+cd -
+
+curl -fsSL https://ollama.com/install.sh | sh ||
+
+deactivate
+
+echo " complete "
