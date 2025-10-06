@@ -12,6 +12,16 @@ OLLAMA – local models such as DeepseekR1:7b
 labelImg
 Examples
 
+# important the VM disk size needs to be altered after its made, this is done by.
+# install using brew
+brew install qemu
+
+
+# 1. find the file
+find ~ -type f -name "*.qcow2" 2>/dev/null
+
+# 2.
+qemu-img resize "/Users/yourname/Documents/UTM/Ubuntu 24.04/Images/Disk-0.qcow2" +20G
 
 # vs code
 
