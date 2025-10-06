@@ -1,0 +1,15 @@
+
+
+Packages:
+
+Python 3.12 and VS code 
+Virtual environments to manage packages. CPU / GPU environment
+OpenCV, ffmpeg
+OpenCV playground (Python 3.10 environment)
+Keras (TensorFlow), PyTorch
+YoLo v11, MNIST
+OLLAMA – local models such as DeepseekR1:7b
+labelImg
+Examples
+
+
