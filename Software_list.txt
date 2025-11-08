@@ -116,3 +116,70 @@ pip list
 which pyrcc5 || find /usr -type f -name pyrcc5 2>/dev/null
 
 
+/////prrrrtttt 3!!!!!!
+# ===============================
+# MACHINE VISION ENV SETUP SCRIPT
+# ===============================
+
+# 0) Stop ANY old virtualenv
+deactivate 2>/dev/null || true
+
+# 1) Install system Qt (needed for labelImg)
+sudo apt update
+sudo apt install -y python3-pyqt5 pyqt5-dev-tools qt5-image-formats-plugins python3-lxml
+
+# 2) Create a new virtual environment that CAN SEE system site packages
+python3 -m venv ~/VAI2 --system-site-packages
+
+# 3) Activate it
+source ~/VAI2/bin/activate
+
+# 4) Upgrade pip and install core packages
+pip install --upgrade pip
+
+# Install numpy 1.x (compatible with OpenCV)
+pip install "numpy<2"
+
+# Install OpenCV (full, with FFmpeg support)
+pip install "opencv-python==4.7.0.72"
+
+# Other important libraries
+pip install ffmpeg-python ultralytics tqdm matplotlib pandas requests pyyaml
+
+# Install Torch CPU wheel
+pip install torch torchvision torchaudio --no-cache-dir --index-url https://download.pytorch.org/whl/cpu
+
+# 5) Quick test
+python3 - << 'EOF'
+import ultralytics, cv2, torch, numpy
+print("ultralytics:", ultralytics.__version__)
+print("cv2:", cv2.__version__)
+print("torch:", torch.__version__)
+print("numpy:", numpy.__version__)
+EOF
+
+# 6) Clone labelImg if missing
+mkdir -p ~/ml_examples
+cd ~/ml_examples
+if [ ! -d labelImg ]; then
+    git clone https://github.com/tzutalin/labelImg.git
+fi
+cd labelImg
+
+# 7) Build Qt resources (system pyrcc5)
+pyrcc5 -o libs/resources.py resources.qrc
+
+# 8) Run labelImg
+python3 labelImg.py
+
+# 9) Notes:
+# If Qt complains about Wayland: QT_QPA_PLATFORM=xcb python3 labelImg.py
+
+# Check python
+which python
+
+# Check pip
+pip list
+
+
+
