@@ -47,4 +47,72 @@ curl -fsSL https://ollama.com/install.sh | sh ||
 
 deactivate
 
+
 echo " complete "
+
+
+
+// pt 2
+
+# 0) Optional: stop any venv and work from your normal shell
+deactivate 2>/dev/null || true
+
+# 1) Install system Qt/PyQt5 (required for labelImg GUI)
+sudo apt update
+sudo apt install -y python3-pyqt5 pyqt5-dev-tools qt5-image-formats-plugins
+
+# 2) Create a safe new virtualenv that CAN SEE system site packages (no deletion of old env)
+python3 -m venv ~/VAI2 --system-site-packages
+
+# 3) Activate the new env
+source ~/VAI2/bin/activate
+# prompt should show: (VAI2)
+
+# 4) Upgrade pip, then install Python packages used in project
+pip install --upgrade pip
+pip install ultralytics opencv-python numpy ffmpeg-python lxml
+
+# Install CPU Torch (adjust if you want different wheel)
+pip install torch torchvision torchaudio --no-cache-dir
+
+# 5) Confirm installs quickly
+python3 -c "import ultralytics, cv2, torch; print('ultralytics', ultralytics.__version__); print('cv2', cv2.__version__); print('torch', torch.__version__)"
+
+# 6) Ensure you have a local clone of labelImg (if not, clone it)
+cd $HOME
+mkdir -p ml_examples
+cd ml_examples
+if [ ! -d labelImg ]; then
+  git clone https://github.com/tzutalin/labelImg.git
+fi
+cd labelImg
+
+# 7) Build Qt resources required by labelImg (generates libs/resources.py)
+# pyrcc5 is provided by pyqt5-dev-tools (apt). If pyrcc5 not found, install pyqt5-dev-tools via apt.
+if ! command -v pyrcc5 >/dev/null 2>&1; then
+  echo "pyrcc5 not found — installing pyqt5-dev-tools"
+  sudo apt install -y pyqt5-dev-tools
+fi
+
+# run the resource compiler
+pyrcc5 -o libs/resources.py resources.qrc
+
+# 8) Launch labelImg from this venv
+python3 labelImg.py
+
+# 9) Useful notes:
+# - In labelImg: set annotation format to YOLO (View → YOLO)
+# - If you see "qt.qpa.plugin: Could not find the Qt platform plugin 'wayland'" try:
+#    export QT_QPA_PLATFORM=xcb
+#   then re-run: python3 labelImg.py
+# - To stop: close GUI or Ctrl+C in terminal
+
+# 10) If something fails, try these quick checks:
+# show which python is active
+which python
+# show installed pip packages
+pip list
+# find pyrcc5 path (if present)
+which pyrcc5 || find /usr -type f -name pyrcc5 2>/dev/null
+
+
