@@ -1,3 +1,4 @@
+# from papi simple as a templaste chat gpt created this which has good also working and added too low & too high also apart of high & low
 from ultralytics import YOLO
 import cv2
 import numpy as np
