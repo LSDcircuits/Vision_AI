@@ -44,11 +44,11 @@ labelImg (optional if using source code)
 
 file structure for YOLO:
 
-/<path>/papi_dataset/
-/images/
-train   /jpg
-val     /jpg
+/path/papi_dataset/images/images/train/
+/path/papi_dataset/images/images/val/
 
+/path/papi_dataset/label/images/train/
+/path/papi_dataset/lable /images/val/
 /labels/
 train  /txt
 val    /txt 
@@ -57,7 +57,7 @@ val    /txt
 
 Yaml file for yolo:
 
-path: /home/.../papi_dataset
+path: home/.../papi_dataset
 train: images/train
 val: images/val
 names:
