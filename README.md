@@ -44,13 +44,14 @@ labelImg (optional if using source code)
 
 file structure for YOLO:
 
-/home/.../papi_dataset/
-├── images
-│   ├── train/  *.jpg|*.jpeg|*.png
-│   └── val/    *.jpg|*.jpeg|*.png
-└── labels
-    ├── train/  *.txt (YOLO bboxes)
-    └── val/    *.txt
+/<path>/papi_dataset/
+/images/
+train   /jpg
+val     /jpg
+
+/labels/
+train  /txt
+val    /txt 
 
 
 
@@ -60,5 +61,5 @@ path: /home/.../papi_dataset
 train: images/train
 val: images/val
 names:
-  0: papi
+0: papi
 
