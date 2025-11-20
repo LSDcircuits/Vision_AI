@@ -1,55 +1,53 @@
-# some ai made code which works somewhart
-
 from ultralytics import YOLO
 import cv2
 import numpy as np
 from collections import deque
 
-# -----------------------------
-# LOAD YOLO MODEL
-# -----------------------------
+
 model = YOLO("/home/vai/VAI2/ml_examples/labelImg/runs/detect/train/weights/best.pt")
 
-# CAMERA STREAM
+
 stream_url = "http://vai:vai@192.168.178.37:8081/video"
 cap = cv2.VideoCapture(stream_url)
 
-# Smoothing buffer for classification stability
 history = deque(maxlen=7)
 
 
-# -----------------------------
-#   WINDOW + SLIDER SETUP
-# -----------------------------
+
 def nothing(x):
     pass
 
 cv2.namedWindow("PAPI Detector")
 cv2.createTrackbar("Confidence", "PAPI Detector", 10, 50, nothing)
 cv2.createTrackbar("Debug", "PAPI Detector", 0, 1, nothing)
-# Debug = 0 → OFF, Debug = 1 → ON
 
 
-# -----------------------------
-#   CLASSIFY PAPI INSIDE CROP
-# -----------------------------
+
 def classify_papi(crop):
 
     hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
+#-----------------------------------------------------------------------
+# refresher for latr
+# HSD RANGE FOR OPEN CV IS 0-180 != 0-360
+#H from 0 to 10 → low-end red hues
+#S from 70 to 255 → must be reddish, not gray
+#V from 50 to 255 → must be bright enough
 
-    # -------------------------
-    # RED MASK
-    # -------------------------
+# hue RED = (0,120,240) ---> openCV ---> (0,60,120) - RED,GREEN,BLUE
+# RED (0,70,50) -> (10,255,255)
+#     (170,70,50) -> (180,255,255)  
+      
+#white 
+# (0,0,210) -> (180,40,255)
+#------------------------------------------------------------------------
+
     red1 = cv2.inRange(hsv, (0, 70, 50), (10, 255, 255))
     red2 = cv2.inRange(hsv, (170, 70, 50), (180, 255, 255))
     red_mask = cv2.bitwise_or(red1, red2)
 
-    # -------------------------
-    # WHITE MASK (Use brightness)
-    # -------------------------
+
     white_mask = cv2.inRange(hsv, (0, 0, 210), (180, 40, 255))
 
-    # Clean up noise
     kernel = np.ones((5, 5), np.uint8)
     red_mask = cv2.morphologyEx(red_mask, cv2.MORPH_OPEN, kernel)
     white_mask = cv2.morphologyEx(white_mask, cv2.MORPH_OPEN, kernel)
@@ -66,8 +64,8 @@ def classify_papi(crop):
     # -------------------------
     # COUNT BLOBS FUNCTION
     # -------------------------
+    # wtf is this :)))?
     def count_blobs(mask, color):
-
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask)
         count = 0
 
@@ -83,6 +81,8 @@ def classify_papi(crop):
                                   (0, 0, 255) if color == "red" else (255, 255, 255), 1)
 
         return count
+## ------------- fml 
+
 
     # Count red/white LEDs
     red_count = count_blobs(red_mask, "red")
