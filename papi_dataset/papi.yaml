@@ -1,0 +1,7 @@
+path: /home/vai/VAI2/papi_dataset
+
+train: images/train
+val: images/val
+
+names:
+  0: papi

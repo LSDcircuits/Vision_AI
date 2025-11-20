@@ -1,0 +1,112 @@
+# ================================================================
+# 0) STOP OLD ENVIRONMENT
+# ================================================================
+deactivate 2>/dev/null || true
+
+
+# ================================================================
+# 1) BASIC TOOLS + VS CODE
+# ================================================================
+sudo apt update
+sudo apt install -y curl wget git build-essential
+
+# Install VS Code (ARM64)
+wget https://update.code.visualstudio.com/latest/linux-deb-arm64/stable -O code.deb
+sudo dpkg -i code.deb || sudo apt -y -f install
+rm -f code.deb
+
+
+# ================================================================
+# 2) QT SYSTEM PACKAGES (for LabelImg)
+# ================================================================
+sudo apt install -y python3-pyqt5 pyqt5-dev-tools qt5-image-formats-plugins python3-lxml
+
+
+# ================================================================
+# 3) PYTHON + VENV
+# ================================================================
+sudo apt install -y python3 python3-pip python3-venv
+
+# Create virtual environment with access to system Qt
+python3 -m venv $HOME/VAI2 --system-site-packages
+source $HOME/VAI2/bin/activate
+
+
+# ================================================================
+# 4) PYTHON PACKAGES (your working versions)
+# ================================================================
+pip install --upgrade pip
+
+# Core machine-vision dependencies
+pip install "numpy<2" "opencv-python==4.7.0.72" ffmpeg-python tqdm matplotlib pandas requests pyyaml rich
+
+# YOLO
+pip install ultralytics
+
+# PyTorch CPU wheels
+pip install --index-url https://download.pytorch.org/whl/cpu torch torchvision torchaudio --no-cache-dir
+
+
+# ================================================================
+# 5) SMOKE TEST (verifies env)
+# ================================================================
+python3 - << 'PY'
+import ultralytics, cv2, torch, numpy
+print("ultralytics:", ultralytics.__version__)
+print("cv2:", cv2.__version__)
+print("torch:", torch.__version__)
+print("numpy:", numpy.__version__)
+PY
+
+
+# ================================================================
+# 6) SET UP THE MACHINE LEARNING EXAMPLES FOLDER
+# ================================================================
+mkdir -p ~/ml_examples
+cd ~/ml_examples
+
+# Clone YOLO examples
+git clone https://github.com/ultralytics/ultralytics.git || true
+
+# Clone labelImg
+git clone https://github.com/tzutalin/labelImg.git || true
+
+
+# ================================================================
+# 7) BUILD LABELIMG RESOURCES (VERY IMPORTANT)
+# ================================================================
+cd ~/ml_examples/labelImg
+
+# ensure pyrcc5 exists
+if ! command -v pyrcc5 >/dev/null 2>&1; then
+    sudo apt install -y pyqt5-dev-tools
+fi
+
+# build resources
+pyrcc5 -o libs/resources.py resources.qrc
+
+# You can run LabelImg with:
+# python3 labelImg.py
+
+
+# ================================================================
+# 8) CREATE YOUR PAPI DATASET STRUCTURE
+# ================================================================
+mkdir -p ~/papi_dataset/images/train
+mkdir -p ~/papi_dataset/images/val
+mkdir -p ~/papi_dataset/labels/train
+mkdir -p ~/papi_dataset/labels/val
+
+# Create your dataset yaml
+cat << EOF > ~/papi_dataset/papi.yaml
+path: /home/$USER/papi_dataset
+
+train: images/train
+val: images/val
+
+names:
+  0: papi
+EOF
+
+echo "✅ SETUP COMPLETE — You now have YOLO, LabelImg, and dataset folders ready."
+
