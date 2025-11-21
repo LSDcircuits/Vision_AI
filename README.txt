@@ -60,3 +60,6 @@ val: images/val
 names:
 0: papi
 
+
+
+yolo train mode=train data=<path_to_data> model=<path_to_model> epochs=<num_epochs> batch=<batch_size> img_size=<image_size> augment=<augmentation_flags> device=<device>
